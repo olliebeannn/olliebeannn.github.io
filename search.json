@@ -2,16 +2,16 @@
   {
     "objectID": "posts/hello-world-ipynb/index.html",
     "href": "posts/hello-world-ipynb/index.html",
-    "title": "olliebeannn.github.io",
+    "title": "Hello World with",
     "section": "",
-    "text": "---\ntitle: \"Hello World with code\"\nauthor: \"Ollie Khakwani\"\ndate: \"2023-04-15\"\n---\n\n\nprint(\"Hello World!\")\n\nHello World!"
+    "text": "print(\"Hello World!\")\n\nHello World!"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "olliebeannn.github.io",
     "section": "",
-    "text": "Hello World\n\n\n\n\n\n\n\n\n\n\n\n\nApr 15, 2023\n\n\nOllie Khakwani\n\n\n\n\n\n\nNo matching items"
+    "text": "Hello World with\n\n\n\n\n\n\n\n\n\n\n\n\nApr 15, 2023\n\n\nOllie Khakwani\n\n\n\n\n\n\n\n\nHello World\n\n\n\n\n\n\n\n\n\n\n\n\nApr 15, 2023\n\n\nOllie Khakwani\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",

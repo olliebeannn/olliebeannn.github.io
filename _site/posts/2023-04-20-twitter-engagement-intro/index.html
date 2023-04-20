@@ -140,19 +140,27 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>It took me a while, but I’m finally taking Jeremy’s advice to FastAI students and starting a blog to document my journey! I’m currently on Part 1 of the 2022/3 iteration of the class and paused at Lecture 4 to try out building a real NLP model on my own mini project.</p>
-<p>This is post 1/n: so far I’ve only made some initial DL models and have a lot more iterations to do, but I’ve already learned a lot and want to document my learnings sooner rather than later.</p>
+<p>It took me a while, but I’m finally taking Jeremy’s advice to FastAI students and starting a blog to document my journey! I’m currently on Part 1 of the 2022/3 iteration of the class and paused at <a href="https://course.fast.ai/Lessons/lesson4.html">Lecture 4</a> to try out building a real NLP model on my own mini project.</p>
+<p>This is post 1 of I’m not sure how many on this project. So far I’ve only made some initial DL models and have a lot more iterations to do, but I’ve already learned a lot and wanted to document my learnings sooner rather than later.</p>
 <section id="the-project" class="level1">
 <h1>The Project</h1>
-<p>My project is to see how effectively I can predict engagement with a tweet based on its content. There are 4 main engagement metrics I’m looking at: Likes, Retweets, Replies, and Quotes.</p>
-<p>I figured this’d be interesting for a few reasons: * I wanted to know how predictable engagement with a tweet is from its content: is there a “formula” for a good tweet? * It could help twitter users who want to test the quality of their ideas for tweets * It’s a rich real-world dataset that’d give a lot of opportunities to iterate on * Lots of people have tried similar things so it’d give me practice reading papers for ideas and implementing them</p>
+<p>My project is to see how effectively I can predict engagement with a tweet based on its content.</p>
+<p>There are 4 main engagement metrics I’m looking at: Likes, Retweets, Replies, and Quotes.</p>
+<p>I figured this’d be interesting for a few reasons:</p>
+<ul>
+<li>I wanted to know how predictable engagement with a tweet is from its content: is there a “formula” for a good tweet?</li>
+<li>It could help twitter users who want to test the quality of their ideas for tweets</li>
+<li>It’s a rich real-world dataset that’d give a lot of opportunities to iterate on</li>
+<li>Lots of people have tried similar things so it’d give me practice reading papers for ideas and implementing them</li>
+</ul>
 </section>
 <section id="getting-started" class="level1">
 <h1>Getting started</h1>
-<p>I was excited to get started and jumped right in, grabbing a dataset (tweets from <span class="citation" data-cites="dril">@dril</span>, a well-known funny Twitter user), and basically copied and edited the Getting started with NLP for absolute beginners notebook. I did manage to build a model, but didn’t know how to interpret my initial result (was it good or bad compared to what’s possible?). Luckily, I read Radek’s book (highly recommended), which outlined how to approach an ML project. My two important realisations were:</p>
+<p>I was excited to get started and jumped right in, grabbing a dataset (tweets from <span class="citation" data-cites="dril">@dril</span>, a well-known funny Twitter user), and basically copied and edited the <a href="https://www.kaggle.com/code/jhoward/getting-started-with-nlp-for-absolute-beginners">Getting started with NLP for absolute beginners notebook</a>. I did manage to build a model, but didn’t know how to interpret my initial result (was it good or bad compared to what’s possible?).</p>
+<p>Luckily, I read <a href="https://rosmulski.gumroad.com/l/learn_machine_learning">Radek’s book</a> (highly recommended), which outlined how to approach an ML project. My two important realisations were:</p>
 <ol type="1">
-<li>I should think carefully about building a good validation set. <a href="https://rachel.fast.ai/posts/2017-11-13-validation-sets/">Dr Rachel Thomas’s blogpost</a> was a fantastic guide.</li>
-<li>I should make a baseline model first to gauge performance against.</li>
+<li>I should think carefully about <a href="https://rachel.fast.ai/posts/2017-11-13-validation-sets/">building a good validation set</a> was a fantastic guide</li>
+<li>I should make a <strong>baseline model</strong> first to gauge performance against</li>
 </ol>
 </section>
 <section id="data-collection-and-exploration" class="level1">
@@ -219,7 +227,13 @@ PCC for BoW model pred_quoteCount_log and quoteCount_log is 0.2563892348366811</
 </section>
 <section id="key-learnings" class="level1">
 <h1>Key Learnings</h1>
-<p>As I worked on this project, I learned a lot of valuable lessons. * <em>Spend more time exploring the data first</em> - it feels like part of the process to discover things while working, but I wasn’t thorough enough in my very first data exploration. * <em>With GPT, lean into just-in-time learning</em> - instead of trying to read a pandas book first, losing focus, and falling off my learning path completely, I was able to use GPT to dive right in. Because I knew at least a little pandas already, this really felt like the right choice. If I got truly stuck or the cracks in my conceptual knowledge were obviously starting to bite, then it would have been the right time to go back to basics with the book. * <em>Use log</em> - training failed when labels were too large and spread out, but using log made it work again. I think the error was just being so enormous that applying gradient descent to it was difficult. * <em>Overfitting is a serious problem</em> - I got a visceral understanding of how badly overfitting can affect performance by comparing model performance on the test set with and without overfitting. There was a huge gap between the two (The 0.6871 without overfitting, but only ~0.45 on average when I was overfitting).</p>
+<p>As I worked on this project, I learned a lot of valuable lessons:</p>
+<ul>
+<li><strong>Spend more time exploring the data first</strong> - it feels like part of the process to discover things while working, but I wasn’t thorough enough in my very first data exploration.</li>
+<li><strong>Use GPT and lean into just-in-time learning</strong> - instead of trying to read a pandas book first, losing focus, and falling off my learning path completely, I was able to use GPT to dive right in. Because I knew at least a little pandas already, this really felt like the right choice. If I got truly stuck or the cracks in my conceptual knowledge were obviously starting to bite, then it would have been the right time to go back to basics with the book.</li>
+<li><strong>Use log on big and skewed values</strong> - training failed when labels were too large and spread out, but using log made it work again. I think the error was just being so enormous that applying gradient descent to it was difficult.</li>
+<li><strong>Overfitting is a serious problem</strong> - I got a visceral understanding of how badly overfitting can affect performance by comparing model performance on the test set with and without overfitting. There was a huge gap between the two (The 0.6871 without overfitting, but only ~0.45 on average when I was overfitting).</li>
+</ul>
 </section>
 <section id="what-next" class="level1">
 <h1>What Next</h1>

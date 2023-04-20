@@ -4,15 +4,18 @@ author: "Ollie Khakwani"
 date: "2023-04-20"
 ---
 
-It took me a while, but I'm finally taking Jeremy's advice to FastAI students and starting a blog to document my journey! I'm currently on Part 1 of the 2022/3 iteration of the class and paused at Lecture 4 to try out building a real NLP model on my own mini project. 
+It took me a while, but I'm finally taking Jeremy's advice to FastAI students and starting a blog to document my journey! I'm currently on Part 1 of the 2022/3 iteration of the class and paused at [Lecture 4](https://course.fast.ai/Lessons/lesson4.html) to try out building a real NLP model on my own mini project. 
 
-This is post 1/n: so far I've only made some initial DL models and have a lot more iterations to do, but I've already learned a lot and want to document my learnings sooner rather than later.
+This is post 1 of I'm not sure how many on this project. So far I've only made some initial DL models and have a lot more iterations to do, but I've already learned a lot and wanted to document my learnings sooner rather than later.
 
 # The Project
 
-My project is to see how effectively I can predict engagement with a tweet based on its content. There are 4 main engagement metrics I'm looking at: Likes, Retweets, Replies, and Quotes.
+My project is to see how effectively I can predict engagement with a tweet based on its content. 
+
+There are 4 main engagement metrics I'm looking at: Likes, Retweets, Replies, and Quotes.
 
 I figured this'd be interesting for a few reasons:
+
 * I wanted to know how predictable engagement with a tweet is from its content: is there a "formula" for a good tweet?
 * It could help twitter users who want to test the quality of their ideas for tweets
 * It's a rich real-world dataset that'd give a lot of opportunities to iterate on
@@ -20,10 +23,12 @@ I figured this'd be interesting for a few reasons:
 
 # Getting started
 
-I was excited to get started and jumped right in, grabbing a dataset (tweets from @dril, a well-known funny Twitter user), and basically copied and edited the Getting started with NLP for absolute beginners notebook. I did manage to build a model, but didn't know how to interpret my initial result (was it good or bad compared to what's possible?). Luckily, I read Radek's book (highly recommended), which outlined how to approach an ML project. My two important realisations were: 
+I was excited to get started and jumped right in, grabbing a dataset (tweets from @dril, a well-known funny Twitter user), and basically copied and edited the [Getting started with NLP for absolute beginners notebook](https://www.kaggle.com/code/jhoward/getting-started-with-nlp-for-absolute-beginners). I did manage to build a model, but didn't know how to interpret my initial result (was it good or bad compared to what's possible?). 
 
-1. I should think carefully about building a good validation set. [Dr Rachel Thomas's blogpost](https://rachel.fast.ai/posts/2017-11-13-validation-sets/) was a fantastic guide.
-2. I should make a baseline model first to gauge performance against.
+Luckily, I read [Radek's book](https://rosmulski.gumroad.com/l/learn_machine_learning) (highly recommended), which outlined how to approach an ML project. My two important realisations were: 
+
+1. I should think carefully about [building a good validation set](https://rachel.fast.ai/posts/2017-11-13-validation-sets/) was a fantastic guide
+2. I should make a **baseline model** first to gauge performance against
 
 # Data Collection and Exploration
 
@@ -97,11 +102,12 @@ And the actual score on my validation set (ran a few times to confirm that it wa
 
 # Key Learnings
 
-As I worked on this project, I learned a lot of valuable lessons. 
-* *Spend more time exploring the data first* - it feels like part of the process to discover things while working, but I wasn't thorough enough in my very first data exploration.
-* *With GPT, lean into just-in-time learning* - instead of trying to read a pandas book first, losing focus, and falling off my learning path completely, I was able to use GPT to dive right in. Because I knew at least a little pandas already, this really felt like the right choice. If I got truly stuck or the cracks in my conceptual knowledge were obviously starting to bite, then it would have been the right time to go back to basics with the book.
-* *Use log* - training failed when labels were too large and spread out, but using log made it work again. I think the error was just being so enormous that applying gradient descent to it was difficult.
-* *Overfitting is a serious problem* - I got a visceral understanding of how badly overfitting can affect performance by comparing model performance on the test set with and without overfitting. There was a huge gap between the two (The 0.6871 without overfitting, but only ~0.45 on average when I was overfitting).
+As I worked on this project, I learned a lot of valuable lessons: 
+
+* **Spend more time exploring the data first** - it feels like part of the process to discover things while working, but I wasn't thorough enough in my very first data exploration.
+* **Use GPT and lean into just-in-time learning** - instead of trying to read a pandas book first, losing focus, and falling off my learning path completely, I was able to use GPT to dive right in. Because I knew at least a little pandas already, this really felt like the right choice. If I got truly stuck or the cracks in my conceptual knowledge were obviously starting to bite, then it would have been the right time to go back to basics with the book.
+* **Use log on big and skewed values** - training failed when labels were too large and spread out, but using log made it work again. I think the error was just being so enormous that applying gradient descent to it was difficult.
+* **Overfitting is a serious problem** - I got a visceral understanding of how badly overfitting can affect performance by comparing model performance on the test set with and without overfitting. There was a huge gap between the two (The 0.6871 without overfitting, but only ~0.45 on average when I was overfitting).
 
 # What Next
 

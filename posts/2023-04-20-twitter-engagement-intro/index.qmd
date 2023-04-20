@@ -1,0 +1,141 @@
+---
+title: "Predicting Tweet Engagement: 1/n"
+author: "Ollie Khakwani"
+date: "2023-04-20"
+draft: true
+---
+
+It took me a while, but I'm finally taking Jeremy's advice to FastAI students and starting a blog to document my journey! I'm currently on Part 1 of the 2022/3 iteration of the class and paused at Lecture 4 to try out building a real NLP model on my own mini project. 
+
+This is post 1/n: so far I've only made some initial DL models and have a lot more iterations to do, but I've already learned a lot and want to document my learnings sooner rather than later.
+
+# The Project
+
+My project is to see how effectively I can predict engagement with a tweet based on its content. There are 4 main engagement metrics I'm looking at: Likes, Retweets, Replies, and Quotes.
+
+I figured this'd be interesting for a few reasons:
+* I wanted to know how predictable engagement with a tweet is from its content: is there a "formula" for a good tweet?
+* It could help twitter users who want to test the quality of their ideas for tweets
+* It's a rich real-world dataset that'd give a lot of opportunities to iterate on
+* Lots of people have tried similar things so it'd give me practice reading papers for ideas and implementing them
+
+# Getting started
+
+I was excited to get started and jumped right in, grabbing a dataset (tweets from @dril, a well-known funny Twitter user), and basically copied and edited the Getting started with NLP for absolute beginners notebook. I did manage to build a model, but didn't know how to interpret my initial result (was it good or bad compared to what's possible?). Luckily, I read Radek's book (highly recommended), which outlined how to approach an ML project. My two important realisations were: 
+
+1. I should think carefully about building a good validation set. [Dr Rachel Thomas's blogpost](https://rachel.fast.ai/posts/2017-11-13-validation-sets/) was a fantastic guide.
+2. I should make a baseline model first to gauge performance against.
+
+# Data Collection and Exploration
+
+After an annoying interaction trying to get access to the Twitter API, I ended up finding a Python module, `snscrape`, and just pulling public data. I can't recommend that you do this or not - I just wanted to get started, and my attempts at reading Twitter's terms of service with ChatGPT and Bing's help led me to believe that it's within the ToC to use public tweet data.
+
+I used `matplotlib` and `pandas` to do some basic data exploration and made some useful discoveries: 
+
+I initially wanted to use `ViewCount` as one of my dependent variables, but it was only available in public data for the past 9 months so it only covered about 500 tweets for @dril. I decided to drop it and stick with the other 4 dependent variables.
+
+Also, I came in wondering what timeframe to use. Twitter accounts tend to gain followers over time (e.g. Elon has 130m followers now compared to ~20m only 4 years ago), which would increase the amount of engagement over time. Part of the reason I selected @dril was that I saw their follower count was relatively stable in comparison (only up ~50% over the past 4 years). Plotting graphs of the average # of likes per month showed that it increased a lot until 2018, but was relatively stable after that, so I cut off data from before Jan 1st 2018.
+
+I also saw that as expected, the dependent variable values were a) very large and b) very right-skewed, so I decided to predict the `log` values. (In my derailed rushed first attempt to get started, I found that my model basically wouldn't train with the original values, probably because the loss was so large when it was trying to predict 171,376 likes. But it worked perfectly with the log values.)
+
+![Untransformed values](depVars-hist.png){width=100%}
+
+![The log values give a much better distribution](depVarsLog-hist.png){width=100%}
+
+# Building a baseline model
+
+I figured my baseline model didn't have to be good, but ideally would be the best non-deep learning approach I could think of.
+
+My first guess and try was with mean/median as my baseline model: a model that just predicts the dependent variable as the mean or the median. I tried both and this...did not work. I'm using Pearson correlation as my accuracy metric, and I found out that it is undefined when one variable does not vary.
+
+My next thought was to try tweet length - something I doubted had an effect, but it was a basic use of the available tweet content data. This worked! But as expected, while in some runs there was a weak correlation, when run multiple times, it had a correlation of 0. (The weak correlations were just noise.)
+
+Finally, I realised I could ask GPT! So I did. It gave a few ideas including the ones I had already tried, but I was intrigued by its last suggestion: a bag-of-words model. What is that, you ask? According to GPT:
+
+>A bag-of-words model is a type of natural language processing model that represents text as a bag (multiset) of its words, disregarding grammar and word order but keeping track of their frequency. The model uses the occurrence of each word in the document to create a numerical representation of the text, which can then be used for tasks such as classification and clustering. While simple, the model can be effective for certain tasks and is often used as a baseline for more complex models.
+
+A little more googling told me that it was a very typical approach to NLP before deep learning. Sounds perfect! And it did indeed turn out to be a great baseline model that was very easy to build. ChatGPT again guided me through it, and with a few tweaks, I was basically able to implement it on my cleaned up data in ~10 lines of code:
+
+```
+# Create bag-of-words representation
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(df_train_val['content'])
+
+# Copy of test dataframe to put preds in
+df_test_02_base_model_bagofwords = df_test.copy()
+
+# Vectorize the content of test dataset
+X_test = vectorizer.transform(df_test_02_base_model_bagofwords['content'])
+
+# Run linreg on each target label col, make preds, print PCC
+for col_name in log_label_col_names:
+    new_model = LinearRegression()
+    new_model.fit(X, df_train_val[col_name])
+    new_model_preds = new_model.predict(X_test)
+                  
+    pred_col_name = 'pred_' + col_name
+    df_test_02_base_model_bagofwords[pred_col_name] = new_model_preds
+    new_model_pcc = df_test_02_base_model_bagofwords[pred_col_name].corr(df_test_02_base_model_bagofwords[col_name], method='pearson')
+    print(f'PCC for BoW model {pred_col_name} and {col_name} is {new_model_pcc}')
+```
+
+And the results were solid - there was a correlation - but what looked like an easy baseline to beat:
+
+```
+PCC for BoW model pred_likeCount_log and likeCount_log is 0.2331556276714991
+PCC for BoW model pred_retweetCount_log and retweetCount_log is 0.3003523663343024
+PCC for BoW model pred_replyCount_log and replyCount_log is 0.27317989690855
+PCC for BoW model pred_quoteCount_log and quoteCount_log is 0.2563892348366811
+```
+
+# The first deep learning model
+
+Everything above took longer than I expected, plus a debugging rabbit hole with package management on Paperspace. So, at this point I've only have results from playing around with `microsoft/deberta-v3-small` so far, but the initial results show a big improvement over baseline. This is the output from training it on `likeCount`:
+
+![](training-deberta-small-likeCount.png)
+
+And the actual score on my validation set (ran a few times to confirm that it wasn't just a lucky first try) was `0.6871`: honestly, a lot better than I expected it'd be possible to predict from tweet content!
+
+# Key Learnings
+
+# What Next
+
+
+
+# Outline
+
+- Preamble (KEEP SHORT)
+-- Taking FastAI class, paused at Lecture 4 to try out NLP and model building
+-- This is post 1/n: only made first deep learning models and will try many improvements, but already lots of learnings, want to get down sooner vs later
+
+- Project description
+-- Possible to predict engagement with tweet based on content?
+
+- Process
+-- Dove in without baseline model, got bit lost... then read Radek's book - recommend to others (also in FastAI class; I just forgot)
+-- Realised should make baseline model first, then use basic deberta, then iterate
+-- Defined some project and learning goals, ideas for baseline
+-- And specific choices about project (eg just 1 user for now; choosing validation set)
+
+- Data collection and exploration
+-- Discoveries, eg initially thinking about view count
+
+- Building baseline model
+-- Tried and failed with mean/median
+-- Tweet length (0) correlation
+-- GPT idea: bag of words, actually great baseline model!
+
+- Making first DL model, performance so far
+
+- Learnings summary (with links back to areas?)
+-- Spend more time exploring data first, at least basic stuff (also feels like part of process to discover things as working, but for sure wasn't thorough enough)
+-- GPT was great, feels right using it for just-in-time learning pandas vs reading a pandas book first. If got truly stuck or cracks in conceptual knowledge really starting to bite, then would have gone back
+-- Training failed when labels were too large and spread out; log made it work again. Think it was error just being so enormous to then apply gradient descent to
+-- Out-of-memory errors, resolutions
+-- Avoiding overfitting (after overfitting): comparison of model perf on test set with and without overfitting, huge gap
+-- Starting with baseline
+
+- Where next
+-- Some own thoughts
+-- Also Got ideas from GPT on what next, will share more then!
+-- Learn evaluation techniques, ways to identify potential improvements to model

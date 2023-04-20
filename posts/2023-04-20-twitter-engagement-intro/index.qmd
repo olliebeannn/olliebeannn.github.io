@@ -2,7 +2,6 @@
 title: "Predicting Tweet Engagement: 1/n"
 author: "Ollie Khakwani"
 date: "2023-04-20"
-draft: true
 ---
 
 It took me a while, but I'm finally taking Jeremy's advice to FastAI students and starting a blog to document my journey! I'm currently on Part 1 of the 2022/3 iteration of the class and paused at Lecture 4 to try out building a real NLP model on my own mini project. 
@@ -98,44 +97,16 @@ And the actual score on my validation set (ran a few times to confirm that it wa
 
 # Key Learnings
 
+As I worked on this project, I learned a lot of valuable lessons. 
+* *Spend more time exploring the data first* - it feels like part of the process to discover things while working, but I wasn't thorough enough in my very first data exploration.
+* *With GPT, lean into just-in-time learning* - instead of trying to read a pandas book first, losing focus, and falling off my learning path completely, I was able to use GPT to dive right in. Because I knew at least a little pandas already, this really felt like the right choice. If I got truly stuck or the cracks in my conceptual knowledge were obviously starting to bite, then it would have been the right time to go back to basics with the book.
+* *Use log* - training failed when labels were too large and spread out, but using log made it work again. I think the error was just being so enormous that applying gradient descent to it was difficult.
+* *Overfitting is a serious problem* - I got a visceral understanding of how badly overfitting can affect performance by comparing model performance on the test set with and without overfitting. There was a huge gap between the two (The 0.6871 without overfitting, but only ~0.45 on average when I was overfitting).
+
 # What Next
 
+I have some of my own ideas for what to try next, but I also got some ideas from GPT, and from [this great blogpost by Christian Wittman](https://chrwittm.github.io/posts/2023-01-17-nlp-with-disaster-tweets/), whose blog I found while learning to set up Quarto (his ["how I created this blog" post](https://chrwittm.github.io/posts/2022-10-21-how-i-created-this-blog/)).
 
+I also want to learn more about evaluation techniques and ways to identify potential improvements to my model.
 
-# Outline
-
-- Preamble (KEEP SHORT)
--- Taking FastAI class, paused at Lecture 4 to try out NLP and model building
--- This is post 1/n: only made first deep learning models and will try many improvements, but already lots of learnings, want to get down sooner vs later
-
-- Project description
--- Possible to predict engagement with tweet based on content?
-
-- Process
--- Dove in without baseline model, got bit lost... then read Radek's book - recommend to others (also in FastAI class; I just forgot)
--- Realised should make baseline model first, then use basic deberta, then iterate
--- Defined some project and learning goals, ideas for baseline
--- And specific choices about project (eg just 1 user for now; choosing validation set)
-
-- Data collection and exploration
--- Discoveries, eg initially thinking about view count
-
-- Building baseline model
--- Tried and failed with mean/median
--- Tweet length (0) correlation
--- GPT idea: bag of words, actually great baseline model!
-
-- Making first DL model, performance so far
-
-- Learnings summary (with links back to areas?)
--- Spend more time exploring data first, at least basic stuff (also feels like part of process to discover things as working, but for sure wasn't thorough enough)
--- GPT was great, feels right using it for just-in-time learning pandas vs reading a pandas book first. If got truly stuck or cracks in conceptual knowledge really starting to bite, then would have gone back
--- Training failed when labels were too large and spread out; log made it work again. Think it was error just being so enormous to then apply gradient descent to
--- Out-of-memory errors, resolutions
--- Avoiding overfitting (after overfitting): comparison of model perf on test set with and without overfitting, huge gap
--- Starting with baseline
-
-- Where next
--- Some own thoughts
--- Also Got ideas from GPT on what next, will share more then!
--- Learn evaluation techniques, ways to identify potential improvements to model
+More to come!
